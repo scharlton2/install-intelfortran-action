@@ -24,9 +24,17 @@ jobs:
         setvars: [ 'true', 'false' ]
         exclude:
           - os: windows-2019
-            path: [ absolute, relative, tilde ]
+            path: absolute
+          - os: windows-2019
+            path: relative
+          - os: windows-2019
+            path: tilde
+          - os: windows-2022
+            path: absolute
           - os: windows-2022
             path: relative
+          - os: windows-2022
+            path: tilde
     steps:
 
       - name: Checkout
