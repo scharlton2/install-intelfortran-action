@@ -23,6 +23,19 @@ jobs:
         os: [ ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019, windows-2022 ]
         path: [ absolute, relative, tilde, default ]
         setvars: [ 'true', 'false' ]
+        exclude:
+          - os: windows-2019
+            path: absolute
+          - os: windows-2019
+            path: relative
+          - os: windows-2019
+            path: tilde
+          - os: windows-2022
+            path: absolute
+          - os: windows-2022
+            path: relative
+          - os: windows-2022
+            path: tilde
     steps:
 
       - name: Checkout

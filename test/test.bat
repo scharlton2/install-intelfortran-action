@@ -1,37 +1,41 @@
-ifort test/hw.f90 -o hw
+@echo off
+ifort test\hw.f90 -o hw.exe
 
-FOR /F "tokens=* USEBACKQ" %%F IN (`hw`) DO (
-SET output=%%F
+FOR /F "tokens=* USEBACKQ" %%F IN (`hw.exe`) DO (
+  SET output=%%F
 )
 
-if /I "%output:hello=%" neq "%output%" (
-echo fortran compile succeeded
+if /I "hello world" EQU "%output%" (
+  echo fortran compile succeeded
 ) else (
-echo "unexpected output: %output%" exit /b 1
+  echo "unexpected output: %output%"
+  exit /b 1
 )
 
-del hw
-icl test/hw.cpp -o hw
+del hw.exe
+icl test\hw.cpp -o hw.exe
 
-FOR /F "tokens=* USEBACKQ" %%F IN (`hw`) DO (
-SET output=%%F
+FOR /F "tokens=* USEBACKQ" %%F IN (`hw.exe`) DO (
+  SET output=%%F
 )
 
-if /I "%output:hello=%" neq "%output%" (
-echo icl compile succeeded
+if /I "hello world" EQU "%output%" (
+  echo icl compile succeeded
 ) else (
-echo "icl unexpected output: %output%" exit /b 1
+  echo "icl unexpected output: %output%"
+  exit /b 1
 )
 
-del hw
-icx test/hw.cpp -o hw
+del hw.exe
+icx test\hw.cpp -o hw.exe
 
-FOR /F "tokens=* USEBACKQ" %%F IN (`hw`) DO (
-SET output=%%F
+FOR /F "tokens=* USEBACKQ" %%F IN (`hw.exe`) DO (
+  SET output=%%F
 )
 
-if /I "%output:hello=%" neq "%output%" (
-echo icx compile succeeded
+if /I "hello world" EQU "%output%" (
+  echo icx compile succeeded
 ) else (
-echo "icx unexpected output: %output%" exit /b 1
+  echo "icx unexpected output: %output%"
+  exit /b 1
 )
