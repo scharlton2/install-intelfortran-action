@@ -167,7 +167,6 @@ runs:
       shell: bash
       run: |
         echo "FC=ifort" >> $GITHUB_ENV
-        echo "CC=icc" >> $GITHUB_ENV
         echo "ONEAPI_ROOT=$INTEL_HPCKIT_INSTALL_PATH" >> $GITHUB_ENV
 
     - name: Set environment variables (Windows)
@@ -175,7 +174,6 @@ runs:
       shell: cmd
       run: |
         echo FC=ifort>>"%GITHUB_ENV%"
-        echo CC=icl>>"%GITHUB_ENV%"
         echo ONEAPI_ROOT=%INTEL_HPCKIT_INSTALL_PATH%>>"%GITHUB_ENV%"
 
     - name: Run setvars scripts
