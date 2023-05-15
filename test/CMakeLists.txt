@@ -12,7 +12,7 @@ if (SRC_BUILD_OPENMP AND (NOT SRC_BUILD_MPI))
   
   find_package(OpenMP REQUIRED)
   
-  add_executable(openmp main.f90)
+  add_executable(openmp main.F90)
  
   if(OpenMP_Fortran_FOUND)
     add_definitions(-DUSE_OPENMP)
@@ -25,7 +25,7 @@ if (SRC_BUILD_MPI)
   
   find_package(MPI REQUIRED)
 
-  add_executable(mpi main.f90)
+  add_executable(mpi main.F90)
   
   if(MPI_Fortran_FOUND)
     add_definitions(-DUSE_MPI)
