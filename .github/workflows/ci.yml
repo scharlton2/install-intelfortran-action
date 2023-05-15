@@ -144,3 +144,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: call "./test/test.bat"
+
+      - name: Test cmake configure
+        env:
+          FC: ifort
+        run: cmake -B _build -S test -DSRC_BUILD_OPENMP:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Release
+
+      - name: Test cmake build
+        run: cmake --build _build --config Release
+
+      - name: Test ctest
+        run: ctest --test-dir _build -C Release
