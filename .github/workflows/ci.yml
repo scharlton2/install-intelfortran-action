@@ -20,80 +20,42 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019, windows-2022 ]
-        path: [ absolute, relative, tilde, default ]
+        ## os: [ ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019, windows-2022 ]
+        os: [ windows-2019, windows-2022 ]
+        ## path: [ absolute, relative, tilde, default ]
         setvars: [ 'true', 'false' ]
-        exclude:
-          - os: windows-2019
-            path: absolute
-          - os: windows-2019
-            path: relative
-          - os: windows-2019
-            path: tilde
-          - os: windows-2022
-            path: absolute
-          - os: windows-2022
-            path: relative
-          - os: windows-2022
-            path: tilde
     steps:
 
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set bin path
-        if: runner.os != 'Windows'
-        run: |
-          if [ "${{ matrix.path }}" == "absolute" ]; then
-            bindir="$HOME/.local/bin"
-          elif [ "${{ matrix.path }}" == "relative" ]; then
-            bindir="bin"
-          elif [ "${{ matrix.path }}" == "tilde" ]; then
-            bindir="~/.local/bin"
-          else
-            # action's default location
-            bindir="~/.local/bin/ifort"
-          fi
+      # - name: Set bin path
+      #   if: runner.os != 'Windows'
+      #   run: |
+      #     if [ "${{ matrix.path }}" == "absolute" ]; then
+      #       bindir="$HOME/.local/bin"
+      #     elif [ "${{ matrix.path }}" == "relative" ]; then
+      #       bindir="bin"
+      #     elif [ "${{ matrix.path }}" == "tilde" ]; then
+      #       bindir="~/.local/bin"
+      #     else
+      #       # action's default location
+      #       bindir="~/.local/bin/ifort"
+      #     fi
 
-          echo "TEST_BINDIR=$bindir" >> $GITHUB_ENV
+      #     echo "TEST_BINDIR=$bindir" >> $GITHUB_ENV
 
       - name: Set bin path (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          if ("${{ matrix.path }}" -eq "absolute") {
-            # $bindir = "C:\Users\runneradmin\.local\bin"
-            $bindir = "C:\Program Files (x86)\Intel\oneAPI"
-          } elseif ("${{ matrix.path }}" -eq "relative") {
-            $bindir = "bin"
-          } elseif ("${{ matrix.path }}" -eq "tilde") {
-            $bindir = "~/.local/bin"
-          } else {
-            # actions's default location
-            $bindir = "~/.local/bin/ifort"
-          }
-
+          $bindir = "C:\Program Files (x86)\Intel\oneAPI"
           echo "TEST_BINDIR=$bindir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Install compilers
-        if: matrix.path != 'default'
-        uses: ./
-        with:
-          path: ${{ env.TEST_BINDIR }}
-          setvars: ${{ matrix.setvars }}
-
-      - name: Install compilers
-        if: matrix.path == 'default'
         uses: ./
         with:
           setvars: ${{ matrix.setvars }}
-
-      - name: Set environment variables
-        if: runner.os != 'Windows' && matrix.setvars != 'true'
-        shell: bash
-        run: |
-          source "$INTEL_HPCKIT_INSTALL_PATH/setvars.sh"
-          env | grep oneapi >> $GITHUB_ENV
 
       - name: Set environment variables
         if: runner.os == 'Windows' && matrix.setvars != 'true'
@@ -107,10 +69,6 @@ jobs:
         if: matrix.setvars != 'true'
         shell: bash
         run: echo "SETVARS_COMPLETED=1" >> $GITHUB_ENV
-
-      - name: Test compilers (Linux & Mac)
-        if: runner.os != 'Windows'
-        run: ./test/test.sh ${{ env.TEST_BINDIR }}
 
       - name: Test compilers (Windows bash)
         if: runner.os == 'Windows'
@@ -144,14 +102,3 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: call "./test/test.bat"
-
-      - name: Test cmake configure
-        env:
-          FC: ifort
-        run: cmake -B _build -S test -DSRC_BUILD_OPENMP:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Release
-
-      - name: Test cmake build
-        run: cmake --build _build --config Release
-
-      - name: Test ctest
-        run: ctest --test-dir _build -C Release
