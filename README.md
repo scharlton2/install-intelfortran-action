@@ -13,7 +13,7 @@ An action to install and cache [Intel OneAPI](https://www.intel.com/content/www/
 - [Usage](#usage)
 - [Environment variables](#environment-variables)
 - [Inputs](#inputs)
-  - [`path`](#path)
+  - ~~[`path`](#path)~~
   - [`setvars`](#setvars)
     - [Setting oneAPI variables on Linux/macOS](#setting-oneapi-variables-on-linuxmacos)
     - [Setting oneAPI variables on Windows](#setting-oneapi-variables-on-windows)
@@ -55,22 +55,22 @@ Besides oneAPI environment variables configured by `setvars` scripts (whose name
 - `INTEL_COMPILER_BIN_PATH` is the location of compiler executables (this is equivalent to `$HPCKIT_INSTALL_PATH/compilers/latest/<mac, linux, or windows>/bin/intel64`, substituting the proper OS)
 - `INTEL_COMPILER_VERSION` is the version of the installed compilers (this may be different than the version of the oneAPI HPC Toolkit)
 - `FC` is set to `ifort`
-- `CC` is set to `icc` on Linux and macOS and `icl` on Windows
+- ~~`CC` is set to `icc` on Linux and macOS and `icl` on Windows~~
 - `SETVARS_COMPLETED` indicates whether oneAPI environment variables have been configured (will be `1` if input `setvars` is `true` and variables were successfully configured, otherwise `0`)
 
 **Note:** GitHub Actions does not preserve environment variables between steps by default &mdash; this action persists them via the [`GITHUB_ENV` environment file](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable).
 
 ## Inputs
 
-- `path`
+- ~~`path`~~
 - `setvars`
 - `cache`
 
-### `path`
+### ~~`path`~~
 
-The `path` input is the location to install executables. The path may be absolute, relative to the workflow's working directory, or may use `~`-expansion. The path is resolved and stored in the `INTEL_HPCKIT_INSTALL_PATH` environment variable, which is then available to subsequent workflow steps.
+~~The `path` input is the location to install executables. The path may be absolute, relative to the workflow's working directory, or may use `~`-expansion. The path is resolved and stored in the `INTEL_HPCKIT_INSTALL_PATH` environment variable, which is then available to subsequent workflow steps.~~
 
-The default install location on Linux and Mac is `~/.local/bin/ifort`. The *only* install location currently supported on Windows is `C:\Program Files (x86)\Intel\oneAPI` (see [Windows caveats](#windows-caveats) below).
+~~The default install location on Linux and Mac is `~/.local/bin/ifort`. The *only* install location currently supported on Windows is `C:\Program Files (x86)\Intel\oneAPI` (see [Windows caveats](#windows-caveats) below).~~
 
 ### `setvars`
 
@@ -138,9 +138,9 @@ error: no instance of overloaded function <function> matches the argument list
 
 To work around this until Intel introduces support for VS 17.4+ it is recommended to use the `windows-2019` runner image, which has Visual Studio 16.
 
-### Install location
+### ~~Install location~~
 
-While the HPC toolkit's install location can be selected freely on Linux and Mac, on Windows there is an unresolved issue causing bundled environment configuration scripts [to fail](https://github.com/w-bonelli/install-intelfortran-action/actions/runs/3298296907/jobs/5440222932#step:5:120) when the toolkit is installed to locations other than the default `C:\Program Files (x86)\Intel\oneAPI`. Different values for the `path` input are currently ignored for Windows and this location is configured automatically.
+~~While the HPC toolkit's install location can be selected freely on Linux and Mac, on Windows there is an unresolved issue causing bundled environment configuration scripts [to fail](https://github.com/w-bonelli/install-intelfortran-action/actions/runs/3298296907/jobs/5440222932#step:5:120) when the toolkit is installed to locations other than the default `C:\Program Files (x86)\Intel\oneAPI`. Different values for the `path` input are currently ignored for Windows and this location is configured automatically.~~
 
 <!-- The Intel oneAPI HPC Toolkit installer defaults to different install locations on Unix and Windows if a path is not explicitly provided with the `--install-dir` option:
 

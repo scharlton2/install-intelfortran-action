@@ -20,16 +20,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Set install path
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        # normalize install path
-        normalized=$(python3 $GITHUB_ACTION_PATH/scripts/normalize_path.py "${{ inputs.path }}")
-        echo "normalized install dir path: $normalized"
-        echo "INTEL_HPCKIT_INSTALL_PATH=$normalized" >> $GITHUB_ENV
-        mkdir -p "$normalized"
-
     - name: Set install path (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
@@ -93,14 +83,6 @@ runs:
       shell: bash
       run: mv "$RUNNER_TEMP\tar.exe" 'C:\Program Files\Git\usr\bin\tar.exe'
 
-    - name: Install compilers
-      if: runner.os != 'Windows' && steps.cache-ifort.outputs.cache-hit != 'true'
-      shell: bash
-      run: |
-        echo "downloading and running HPC kit installer"
-        os=$(echo $RUNNER_OS | tr '[:upper:]' '[:lower:]')
-        "${{ github.action_path }}/scripts/install_$os.sh" "${{ env.INTEL_HPCKIT_INSTALL_PATH }}" "${{ env.INTEL_HPCKIT_INSTALLER_URL }}" "${{ env.INTEL_HPCKIT_COMPONENTS }}"
-
     - name: Install compilers (Windows)
       if: runner.os == 'Windows' && steps.cache-ifort.outputs.cache-hit != 'true'
       shell: cmd
@@ -115,43 +97,12 @@ runs:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
         key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ steps.get-date.outputs.date }}
 
-    - name: Check compiler version
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        latest=$(ls "$INTEL_HPCKIT_INSTALL_PATH/compiler" | tail -n +2 | sort -V | tail -n 1) 
-        echo "INTEL_COMPILER_VERSION=$latest" >> $GITHUB_ENV
-
     - name: Check compiler version (Windows)
       if: runner.os == 'Windows'
       shell: cmd
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "%INTEL_HPCKIT_INSTALL_PATH%\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST=%%f"
         echo INTEL_COMPILER_VERSION=%LATEST%>>"%GITHUB_ENV%"
-
-    - name: Configure system path
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          ostag="linux"
-        
-          # workaround missing libimf.so error
-          # https://stackoverflow.com/a/70700494/6514033
-          sudo mkdir -p /etc/ld.so.conf.d
-          echo "$INTEL_HPCKIT_INSTALL_PATH/compiler/latest/$ostag/compiler/lib/intel64_lin" | sudo tee -a /etc/ld.so.conf.d/intel_libs.conf
-          sudo ldconfig
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-          ostag="mac"
-        else
-          ostag="windows"
-        fi
-        echo "os tag: $ostag"
-        
-        bindir="$INTEL_HPCKIT_INSTALL_PATH/compiler/latest/$ostag/bin/intel64"
-        echo "adding ifort compiler bin dir '$bindir' to path"
-        echo "$bindir" >> $GITHUB_PATH
-        echo "INTEL_COMPILER_BIN_PATH=$bindir" >> $GITHUB_ENV
 
     - name: Configure system path (Windows)
       if: runner.os == 'Windows'
@@ -162,26 +113,12 @@ runs:
         echo %bindir%>>"%GITHUB_PATH%"
         echo INTEL_COMPILER_BIN_PATH=%bindir%>>"%GITHUB_ENV%"
 
-    - name: Set environment variables
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        echo "FC=ifort" >> $GITHUB_ENV
-        echo "ONEAPI_ROOT=$INTEL_HPCKIT_INSTALL_PATH" >> $GITHUB_ENV
-
     - name: Set environment variables (Windows)
       if: runner.os == 'Windows'
       shell: cmd
       run: |
         echo FC=ifort>>"%GITHUB_ENV%"
         echo ONEAPI_ROOT=%INTEL_HPCKIT_INSTALL_PATH%>>"%GITHUB_ENV%"
-
-    - name: Run setvars scripts
-      if: runner.os != 'Windows' && inputs.setvars == 'true'
-      shell: bash
-      run: |
-        source "$INTEL_HPCKIT_INSTALL_PATH/setvars.sh"
-        env | grep oneapi >> $GITHUB_ENV
 
     # - name: Setup MSBuild
     #   if: runner.os == 'Windows'
