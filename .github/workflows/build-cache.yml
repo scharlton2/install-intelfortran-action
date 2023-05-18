@@ -1,0 +1,37 @@
+name: build-cache
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  schedule:
+    - cron: '0 15 * * *' # run at 3 PM UTC every day 12 AM JST 9 AM MDT
+  workflow_dispatch:
+
+jobs:
+    test_cmake:
+        name: Test cmake build
+        runs-on: ${{ matrix.os }}
+        strategy:
+          fail-fast: false
+          matrix:
+            os: [ windows-2019, windows-2022 ]
+
+        steps:
+    
+          - name: Checkout action
+            uses: actions/checkout@v3
+
+          - name: Install ifort
+            uses: ./
+
+          - name: CMake configure
+            run: cmake -B build -S test -G Ninja -DSRC_BUILD_OPENMP:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Release
+
+          - name: CMake build
+            run: cmake --build build
+
+          - name: CMake test
+            run: ctest --test-dir build

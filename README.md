@@ -4,6 +4,8 @@
 <!-- [![CI](https://github.com/modflowpy/install-intelfortran-action/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/modflowpy/install-intelfortran-action/actions/workflows/ci.yml) -->
 <!-- [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) -->
 
+### Modified from https://github.com/modflowpy/install-intelfortran-action
+
 An action to install and cache [Intel OneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler.html#gs.bksc2p) Fortran and C/C++ compilers via the [HPC Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html#gs.g10hgy).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -15,7 +17,7 @@ An action to install and cache [Intel OneAPI](https://www.intel.com/content/www/
 - [Inputs](#inputs)
   - ~~[`path`](#path)~~
   - [`setvars`](#setvars)
-    - [Setting oneAPI variables on Linux/macOS](#setting-oneapi-variables-on-linuxmacos)
+    - ~~[Setting oneAPI variables on Linux/macOS](#setting-oneapi-variables-on-linuxmacos)~~
     - [Setting oneAPI variables on Windows](#setting-oneapi-variables-on-windows)
   - [`cache`](#cache)
 - [Outputs](#outputs)
@@ -39,7 +41,7 @@ To use this action, add a step like the following to your workflow:
 
 ```yaml
 - name: Setup Intel Fortran
-  uses: modflowpy/install-intelfortran-action@v1
+  uses: i-RIC/install-intelfortran-action@v1
 ```
 
 By default, this action runs oneAPI `setvars` scripts to configure the environment for use. If you would rather run the oneAPI environment configuration scripts yourself, set the `setvars` input to `false`.
@@ -80,13 +82,15 @@ If you prefer to run the oneAPI environment configuration scripts manually, set 
 
 **Note:** if you elect to activate the oneAPI environment manually, you must either do so in the same step as your compiler invocation, or use the `GITHUB_ENV` environment file to persist the environment variables between steps.
 
-#### Setting oneAPI variables on Linux/macOS
+#### ~~Setting oneAPI variables on Linux/macOS~~
 
-On Linux and macOS it is sufficient to source `setvars.sh`, using the `INTEL_HPCKIT_INSTALL_PATH` environment variable to locate it:
+~~On Linux and macOS it is sufficient to source `setvars.sh`, using the `INTEL_HPCKIT_INSTALL_PATH` environment variable to locate it:~~
 
+<!-- 
 ```shell
 source "$INTEL_HPCKIT_INSTALL_PATH/setvars.sh"
 ```
+-->
 
 #### Setting oneAPI variables on Windows
 
