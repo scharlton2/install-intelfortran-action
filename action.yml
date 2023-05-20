@@ -82,7 +82,7 @@ runs:
       shell: cmd
       run: |
         echo downloading and running HPC kit installer
-        call "${{ env.GITHUB_ACTION_PATH }}\scripts\install_windows.bat" "${{ env.INTEL_HPCKIT_INSTALL_PATH }}" "${{ env.INTEL_HPCKIT_INSTALLER_URL }}" "${{ env.INTEL_HPCKIT_COMPONENTS }}"
+        call "%GITHUB_ACTION_PATH%\scripts\install_windows.bat" "${{ env.INTEL_HPCKIT_INSTALLER_URL }}" "${{ env.INTEL_HPCKIT_COMPONENTS }}"
 
     - name: exclude unused files from cache
       if: runner.os == 'windows' && inputs.cache == 'true' && steps.cache-ifort.outputs.cache-hit != 'true'
