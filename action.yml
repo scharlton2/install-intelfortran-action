@@ -69,7 +69,7 @@ runs:
       uses: martijnhols/actions-cache/restore@v3
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ hashFiles("**/scripts/cache_exclude_windows.sh") }}
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ hashFiles('**/scripts/cache_exclude_windows.sh') }}
 
     # restore GNU tar
     - name: Restore GNU tar
