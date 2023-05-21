@@ -118,11 +118,13 @@ The action has the following outputs:
 
 The `cache-hit` output indicates whether the cache was successfully restored. The output is `true` if the cache was restored, otherwise `false`. The value will always be `false` if the `cache` input is `false`.
 
-Cache keys follow pattern:
+~~Cache keys follow pattern:~~
 
+<!-- 
 ```
 intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ %Y%m%d }}
 ```
+-->
 
 ## Windows caveats
 

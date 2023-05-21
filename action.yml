@@ -63,19 +63,13 @@ runs:
       shell: bash
       run: mv "C:\Program Files\Git\usr\bin\tar.exe" "$RUNNER_TEMP\tar.exe"
 
-    - name: Get Date
-      if: inputs.cache == 'true'
-      id: get-date
-      shell: bash
-      run: echo "date=$(/bin/date -u "+%Y%m%d")" >> "$GITHUB_OUTPUT"
-
     - name: Restore cache
-      if: inputs.cache == 'true'
+      if: runner.os == 'windows' && inputs.cache == 'true'
       id: cache-ifort
       uses: martijnhols/actions-cache/restore@v3
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ steps.get-date.outputs.date }}
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ hashFiles('**/scripts/cache_exclude_windows.sh') }}
 
     # restore GNU tar
     - name: Restore GNU tar
@@ -88,14 +82,19 @@ runs:
       shell: cmd
       run: |
         echo downloading and running HPC kit installer
-        call "%GITHUB_ACTION_PATH%\scripts\install_windows.bat" "${{ env.INTEL_HPCKIT_INSTALL_PATH }}" "${{ env.INTEL_HPCKIT_INSTALLER_URL }}" "${{ env.INTEL_HPCKIT_COMPONENTS }}"
+        call "%GITHUB_ACTION_PATH%\scripts\install_windows.bat" "${{ env.INTEL_HPCKIT_INSTALLER_URL }}" "${{ env.INTEL_HPCKIT_COMPONENTS }}"
+
+    - name: exclude unused files from cache
+      if: runner.os == 'windows' && inputs.cache == 'true' && steps.cache-ifort.outputs.cache-hit != 'true'
+      shell: bash
+      run: $GITHUB_ACTION_PATH/scripts/cache_exclude_windows.sh
 
     - name: Save cache
       if: inputs.cache == 'true' && steps.cache-ifort.outputs.cache-hit != 'true'
       uses: martijnhols/actions-cache/save@v3
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-${{ steps.get-date.outputs.date }}
+        key: ${{ steps.cache-ifort.outputs.primary-key }}
 
     - name: Check compiler version (Windows)
       if: runner.os == 'Windows'
