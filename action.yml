@@ -66,7 +66,7 @@ runs:
     - name: Restore cache
       if: runner.os == 'windows' && inputs.cache == 'true'
       id: cache-ifort
-      uses: martijnhols/actions-cache/restore@v3
+      uses: actions/cache/restore@v3
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
         key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-0
@@ -91,7 +91,7 @@ runs:
 
     - name: Save cache
       if: inputs.cache == 'true' && steps.cache-ifort.outputs.cache-hit != 'true'
-      uses: martijnhols/actions-cache/save@v3
+      uses: actions/cache/save@v3
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
         key: ${{ steps.cache-ifort.outputs.primary-key }}
@@ -160,5 +160,3 @@ runs:
       if: runner.os == 'Windows'
       shell: bash
       run: mv "/usr/bin/link" "$RUNNER_TEMP/link"
-
-
