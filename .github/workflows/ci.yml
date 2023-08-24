@@ -45,6 +45,13 @@ jobs:
 
       #     echo "TEST_BINDIR=$bindir" >> $GITHUB_ENV
 
+      - name: Check tar version
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Get-Command tar
+          tar --version
+
       - name: Set bin path (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
