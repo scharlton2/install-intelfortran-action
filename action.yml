@@ -57,25 +57,13 @@ runs:
         echo "using HPC kit version $version"
         echo "INTEL_HPCKIT_VERSION=$version" >> $GITHUB_ENV
 
-    # GNU tar can't handle symlinks on Windows, hide it so default Windows tar is used to restore cache
-    - name: Hide GNU tar
-      if: runner.os == 'windows' && inputs.cache == 'true'
-      shell: bash
-      run: mv "C:\Program Files\Git\usr\bin\tar.exe" "$RUNNER_TEMP\tar.exe"
-
     - name: Restore cache
       if: runner.os == 'windows' && inputs.cache == 'true'
       id: cache-ifort
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-1
-
-    # restore GNU tar
-    - name: Restore GNU tar
-      if: runner.os == 'windows' && inputs.cache == 'true'
-      shell: bash
-      run: mv "$RUNNER_TEMP\tar.exe" 'C:\Program Files\Git\usr\bin\tar.exe'
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}
 
     - name: Install compilers (Windows)
       if: runner.os == 'Windows' && steps.cache-ifort.outputs.cache-hit != 'true'
@@ -94,7 +82,7 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-1
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}
 
     - name: Check compiler version (Windows)
       if: runner.os == 'Windows'
@@ -118,28 +106,6 @@ runs:
       run: |
         echo FC=ifort>>"%GITHUB_ENV%"
         echo ONEAPI_ROOT=%INTEL_HPCKIT_INSTALL_PATH%>>"%GITHUB_ENV%"
-
-    # - name: Setup MSBuild
-    #   if: runner.os == 'Windows'
-    #   uses: microsoft/setup-msbuild@v1.1
-
-    # - name: Find VS versions
-    #   id: find-vcvars
-    #   if: runner.os == 'Windows'
-    #   shell: pwsh
-    #   run: |
-    #     $products = 'Community','Professional','Enterprise','BuildTools' | %{ "Microsoft.VisualStudio.Product.$_" }
-    #     $vswhere = Get-Command 'vswhere'
-    #     $vs = & $vswhere.Path -products $products -latest -format json | ConvertFrom-Json
-    #     $script = Join-Path $vs.installationPath 'BuildTools' 'VC' 'Auxiliary' 'Build' 'vcvars64.bat'
-    #     echo "vcvars_script=$script" >> $GITHUB_OUTPUT
-
-    # - name: Run vcvars script (Windows)
-    #   if: runner.os == 'Windows'
-    #   shell: cmd
-    #   run: |
-    #     call ${{ steps.find-vcvars.outputs.vcvars_script }}
-    #     :: call "%INTEL_HPCKIT_INSTALL_PATH%\setvars-vcvarsall.bat"
 
     - name: Run setvars script (Windows)
       if: runner.os == 'Windows' && inputs.setvars == 'true'
