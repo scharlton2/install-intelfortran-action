@@ -41,7 +41,7 @@ To use this action, add a step like the following to your workflow:
 
 ```yaml
 - name: Setup Intel Fortran
-  uses: i-RIC/install-intelfortran-action@v1
+  uses: i-RIC/install-intelfortran-action@v2
 ```
 
 By default, this action runs oneAPI `setvars` scripts to configure the environment for use. If you would rather run the oneAPI environment configuration scripts yourself, set the `setvars` input to `false`.
