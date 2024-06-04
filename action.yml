@@ -69,7 +69,7 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-0
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-1
 
     # restore GNU tar
     - name: Restore GNU tar
@@ -94,7 +94,7 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: ${{ env.INTEL_HPCKIT_INSTALL_PATH }}
-        key: ${{ steps.cache-ifort.outputs.primary-key }}
+        key: intelfortran-${{ runner.os }}-${{ env.INTEL_HPCKIT_VERSION }}-${{ env.INTEL_HPCKIT_COMPONENTS }}-1
 
     - name: Check compiler version (Windows)
       if: runner.os == 'Windows'
