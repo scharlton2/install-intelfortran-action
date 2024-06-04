@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - '**.md'
   schedule:
-    - cron: '0 15 * * *' # run at 3 PM UTC every day 12 AM JST 9 AM MDT
+    - cron: '0 15 * * 2' # run at 3 PM UTC on Tuesdays 12 AM JST 9 AM MDT
   workflow_dispatch:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         steps:
     
           - name: Checkout action
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install ifort
             uses: ./
