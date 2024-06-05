@@ -20,30 +20,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ## os: [ ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019, windows-2022 ]
         os: [ windows-2019, windows-2022 ]
-        ## path: [ absolute, relative, tilde, default ]
-        setvars: [ 'true', 'false' ]
+
     steps:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      # - name: Set bin path
-      #   if: runner.os != 'Windows'
-      #   run: |
-      #     if [ "${{ matrix.path }}" == "absolute" ]; then
-      #       bindir="$HOME/.local/bin"
-      #     elif [ "${{ matrix.path }}" == "relative" ]; then
-      #       bindir="bin"
-      #     elif [ "${{ matrix.path }}" == "tilde" ]; then
-      #       bindir="~/.local/bin"
-      #     else
-      #       # action's default location
-      #       bindir="~/.local/bin/ifort"
-      #     fi
-
-      #     echo "TEST_BINDIR=$bindir" >> $GITHUB_ENV
 
       - name: Set bin path (Windows)
         if: runner.os == 'Windows'
@@ -54,21 +36,6 @@ jobs:
 
       - name: Install compilers
         uses: ./
-        with:
-          setvars: ${{ matrix.setvars }}
-
-      - name: Set environment variables
-        if: runner.os == 'Windows' && matrix.setvars != 'true'
-        shell: cmd
-        run: |
-          call "%INTEL_HPCKIT_INSTALL_PATH%\compiler\%INTEL_COMPILER_VERSION%\env\vars.bat"
-          set | findstr /c:"oneAPI" >> "%GITHUB_ENV%"
-
-      # not needed atm, but just in case any future tests require this
-      - name: Set SETVARS_COMPLETED
-        if: matrix.setvars != 'true'
-        shell: bash
-        run: echo "SETVARS_COMPLETED=1" >> $GITHUB_ENV
 
       - name: Test compilers (Windows bash)
         if: runner.os == 'Windows'
