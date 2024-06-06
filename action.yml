@@ -7,4 +7,4 @@ runs:
       id: setup-fortran
       with:
         compiler: intel-classic
-        version: 2023.1.0
+        version: 2021.9.0   # ifx 2023.1.0
