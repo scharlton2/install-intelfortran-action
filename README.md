@@ -1,11 +1,11 @@
 # install-intelfortran-action
 
-### Uses https://github.com/fortran-lang/setup-fortran
+### Uses https://github.com/i-RIC/setup-fortran
 
 equivalent to:
 
-    - uses: fortran-lang/setup-fortran@v1
+    - uses: i-RIC/setup-fortran@v1
       id: setup-fortran
       with:
         compiler: intel-classic
-        version: 2023.1.0
+        version: 2021.9.0

@@ -3,7 +3,7 @@ description: Install, cache, and configure environment for the Intel Fortran com
 runs:
   using: composite
   steps:
-    - uses: fortran-lang/setup-fortran@v1
+    - uses: i-RIC/setup-fortran@v1
       id: setup-fortran
       with:
         compiler: intel-classic
